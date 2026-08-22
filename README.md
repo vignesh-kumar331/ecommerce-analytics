@@ -2,6 +2,20 @@
 
 A beginner-level data analytics project analyzing 18 months of e-commerce sales data to understand revenue performance, customer buying patterns, and customer retention.
 
+<div align="center">
+
+# [▶ VIEW LIVE DASHBOARD](https://vignesh-kumar331.github.io/ecommerce-analytics/)
+
+</div>
+
+## Quick Links
+
+| What | Where |
+|------|-------|
+| Interactive Dashboard | https://vignesh-kumar331.github.io/ecommerce-analytics/ |
+| Excel Workbook | [`Ecommerce_Sales_Dashboard.xlsx`](Ecommerce_Sales_Dashboard.xlsx) |
+| Dataset | [`orders.csv`](orders.csv) |
+
 ## Live Dashboard
 
 View the interactive dashboard online (GitHub Pages):
