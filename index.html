@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E-Commerce Sales &amp; Customer Retention Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy:#1f3864; --blue:#2e75b6; --green:#548235; --purple:#7030a0;
+    --red:#c00000; --bg:#f4f6fa; --card:#ffffff; --text:#243447;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Arial,sans-serif; }
+  body { background:var(--bg); color:var(--text); padding:28px; }
+  .wrap { max-width:1200px; margin:0 auto; }
+  header { text-align:center; margin-bottom:26px; }
+  header h1 { color:var(--navy); font-size:26px; }
+  header p { color:#7a8699; margin-top:6px; font-size:14px; }
+  .grid-kpi { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:14px; margin-bottom:22px; }
+  .kpi { background:var(--card); border-radius:12px; padding:16px; text-align:center;
+         box-shadow:0 1px 4px rgba(20,40,80,.08); border-top:4px solid var(--navy); }
+  .kpi .label { font-size:11px; letter-spacing:.06em; font-weight:700; color:#8a94a6; }
+  .kpi .value { font-size:26px; font-weight:800; color:var(--navy); margin-top:6px; }
+  .kpi.rev  { border-color:var(--navy); }
+  .kpi.ord  { border-color:var(--blue); }   .kpi.ord .value { color:var(--blue); }
+  .kpi.aov  { border-color:var(--green); }  .kpi.aov .value { color:var(--green); }
+  .kpi.rep  { border-color:var(--purple);}  .kpi.rep .value { color:var(--purple); }
+  .kpi.chr  { border-color:var(--red); }    .kpi.chr .value { color:var(--red); }
+  .grid-charts { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media (max-width:860px){ .grid-charts{ grid-template-columns:1fr; } }
+  .card { background:var(--card); border-radius:12px; padding:18px; box-shadow:0 1px 4px rgba(20,40,80,.08); }
+  .card h2 { font-size:14px; color:var(--navy); margin-bottom:10px; }
+  .chart-box { position:relative; height:300px; }
+  .insights { background:var(--card); border-radius:12px; padding:20px; margin-top:18px;
+              box-shadow:0 1px 4px rgba(20,40,80,.08); }
+  .insights h2 { color:var(--navy); font-size:15px; margin-bottom:10px; }
+  .insights li { margin:7px 0 7px 18px; font-size:14px; line-height:1.5; }
+  footer { text-align:center; color:#9aa5b5; font-size:12px; margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>E-Commerce Sales &amp; Customer Retention Dashboard</h1>
+    <p>Data period: Jul 2024 – Dec 2025 • 6,000 orders • 2,270 customers</p>
+  </header>
+
+  <div class="grid-kpi">
+    <div class="kpi rev"><div class="label">TOTAL REVENUE</div><div class="value">$986,167</div></div>
+    <div class="kpi ord"><div class="label">TOTAL ORDERS</div><div class="value">6,000</div></div>
+    <div class="kpi aov"><div class="label">AVG ORDER VALUE</div><div class="value">$164.36</div></div>
+    <div class="kpi rep"><div class="label">REPEAT PURCHASE RATE</div><div class="value">75.5%</div></div>
+    <div class="kpi chr"><div class="label">CHURNED (90d+)</div><div class="value">1,446</div></div>
+    <div class="kpi"><div class="label">UNIQUE CUSTOMERS</div><div class="value">2,270</div></div>
+  </div>
+
+  <div class="grid-charts">
+    <div class="card"><h2>Monthly Revenue Trend</h2><div class="chart-box"><canvas id="revChart"></canvas></div></div>
+    <div class="card"><h2>Orders per Month</h2><div class="chart-box"><canvas id="ordChart"></canvas></div></div>
+    <div class="card"><h2>Revenue by Product Category</h2><div class="chart-box"><canvas id="catChart"></canvas></div></div>
+    <div class="card"><h2>Customer Status (Active vs Churned)</h2><div class="chart-box"><canvas id="pieChart"></canvas></div></div>
+  </div>
+
+  <div class="insights">
+    <h2>Key Insights</h2>
+    <ul>
+      <li>Best month: <b>Jul 2025 ($60,601)</b>; weakest month: <b>Jun 2025 ($47,045)</b>.</li>
+      <li><b>Electronics</b> leads all categories with $457,962 (46% of revenue); <b>Beauty</b> is lowest at $72,078.</li>
+      <li>1,713 of 2,270 customers ordered more than once — repeat purchase rate <b>75.5%</b>.</li>
+      <li><b>1,446 customers (63.7%)</b> haven't ordered in 90+ days — ideal target for a win-back campaign.</li>
+      <li>Average order value is <b>$164.36</b> across 6,000 orders.</li>
+    </ul>
+  </div>
+
+  <footer>E-Commerce Analytics Project • Built with Chart.js • Data: orders.csv</footer>
+</div>
+
+<script>
+const D = {"kpis": {"totalRevenue": 986167, "totalOrders": 6000, "aov": 164.36, "uniqueCustomers": 2270, "repeatRate": 75.5, "churned": 1446, "churnPct": 63.7}, "months": ["Jul 2024", "Aug 2024", "Sep 2024", "Oct 2024", "Nov 2024", "Dec 2024", "Jan 2025", "Feb 2025", "Mar 2025", "Apr 2025", "May 2025", "Jun 2025", "Jul 2025", "Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025"], "monthlyRevenue": [54948, 57059, 50520, 54204, 57166, 54471, 56248, 57125, 51000, 53106, 51125, 47045, 60601, 60055, 55640, 54194, 56437, 55224], "monthlyOrders": [354, 335, 310, 352, 348, 327, 327, 324, 308, 314, 322, 304, 370, 351, 346, 338, 344, 326], "categories": ["Electronics", "Home & Kitchen", "Clothing", "Sports", "Beauty"], "categoryRevenue": [457962, 216931, 154347, 84848, 72078], "customerStatus": {"Active": 824, "Churned": 1446}};
+const money = v => '$' + v.toLocaleString('en-US');
+const NAVY='#1f3864', BLUE='#2e75b6', GREEN='#548235', RED='#c00000';
+
+new Chart(document.getElementById('revChart'), {
+  type:'line',
+  data:{ labels:D.months,
+    datasets:[{ label:'Revenue ($)', data:D.monthlyRevenue, borderColor:NAVY,
+      backgroundColor:'rgba(31,56,100,.12)', fill:true, tension:.25,
+      pointRadius:3, pointBackgroundColor:NAVY }]},
+  options:{ maintainAspectRatio:false,
+    plugins:{ tooltip:{ callbacks:{ label:c=>money(c.parsed.y) } }, legend:{display:false} },
+    scales:{ y:{ ticks:{ callback:v=>'$'+(v/1000)+'k' } } } }
+});
+
+new Chart(document.getElementById('ordChart'), {
+  type:'bar',
+  data:{ labels:D.months,
+    datasets:[{ label:'Orders', data:D.monthlyOrders, backgroundColor:BLUE, borderRadius:4 }]},
+  options:{ maintainAspectRatio:false, plugins:{ legend:{display:false} },
+    scales:{ y:{ beginAtZero:true } } }
+});
+
+new Chart(document.getElementById('catChart'), {
+  type:'bar',
+  data:{ labels:D.categories,
+    datasets:[{ label:'Revenue ($)', data:D.categoryRevenue,
+      backgroundColor:[NAVY,BLUE,GREEN,'#b58b00','#a33b3b'], borderRadius:4 }]},
+  options:{ indexAxis:'y', maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:c=>money(c.parsed.x) } } },
+    scales:{ x:{ ticks:{ callback:v=>'$'+(v/1000)+'k' } } } }
+});
+
+new Chart(document.getElementById('pieChart'), {
+  type:'doughnut',
+  data:{ labels:Object.keys(D.customerStatus),
+    datasets:[{ data:Object.values(D.customerStatus), backgroundColor:[GREEN,RED], borderWidth:2 }]},
+  options:{ maintainAspectRatio:false, cutout:'55%',
+    plugins:{ legend:{position:'bottom'},
+      tooltip:{ callbacks:{ label:c=>c.label+': '+c.parsed.toLocaleString()+' ('+ (c.parsed/(D.kpis.uniqueCustomers)*100).toFixed(1)+'%)' } } } }
+});
+</script>
+</body>
+</html>
